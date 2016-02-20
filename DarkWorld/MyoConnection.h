@@ -12,6 +12,7 @@ public:
 
 	void onArmUnsync(myo::Myo* myo, uint64_t timestamp);
 	bool onArm;
+	bool isActive;
 	myo::Arm whichArm;
 	myo::Pose currentPose = myo::Pose::rest;
 	myo::Pose lastActivePose = myo::Pose::rest;

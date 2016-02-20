@@ -27,6 +27,9 @@
     <ClInclude Include="ImageParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyoConnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

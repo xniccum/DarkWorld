@@ -6,7 +6,7 @@
 	MyoConnection::MyoConnection()
 		: onArm(false), currentPose()
 	{
-		
+		isActive = false;
 	}
 	// onUnpair() is called whenever the Myo is disconnected from Myo Connect by the user.
 	void MyoConnection::onUnpair(myo::Myo* myo, uint64_t timestamp)
@@ -28,11 +28,13 @@
 			// the text on the screen. The Myo will vibrate.
 			myo->notifyUserAction();
 			lastActivePose = currentPose;
+			
 		}
 		else {
 			// Tell the Myo to stay unlocked only for a short period. This allows the Myo to stay unlocked while poses
 			// are being performed, but lock after inactivity.
 			//myo->unlock(myo::Myo::unlockTimed);
+			isActive = false;
 		}
 	}
 	// onArmSync() is called whenever Myo has recognized a Sync Gesture after someone has put it on their
