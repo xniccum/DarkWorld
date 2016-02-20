@@ -37,8 +37,23 @@ void getWebcamSnip() {
 	}
 	imwrite("tmp.jpg", frame);
 }
-
-//Casually commenting this out, leaving it here until we can implement. 
+//Converts gestures to stuff we like
+void mapToCommands(myo::Pose pose)
+{
+	if (pose == myo::Pose::waveIn || pose == myo::Pose::waveOut)
+	{
+		// "ATTACK"
+		std::cout << "Attack!" << std::endl << std::endl;
+		return;
+	}
+	if (pose == myo::Pose::fingersSpread)
+	{
+		// "SELECT"
+		std::cout << "Select" << std::endl << std::endl;
+		return;
+	}
+}
+//Connects to Myo server and gets gestures
 int connectMyo()
 {
 	// We catch any exceptions that might occur below -- see the catch statement for more details.
@@ -83,8 +98,7 @@ int connectMyo()
 				timeinfo = std::localtime(&rawtime);
 				std::strftime(buffer, 80, "[%H:%M:%S]\t", timeinfo);
 				//std::puts(buffer);
-
-				std::cout << buffer << collector.lastActivePose << " - " << collector.currentPose << std::endl << std::endl;
+				mapToCommands(collector.currentPose);
 				collector.isActive = true;
 			}
 			if (collector.onArm != lastStateOfSync){
@@ -126,6 +140,7 @@ void renderingThread(sf::RenderWindow* window)
 		window->display();
 	}
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {

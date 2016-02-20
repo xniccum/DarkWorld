@@ -27,7 +27,6 @@
 			// Notify the Myo that the pose has resulted in an action, in this case changing
 			// the text on the screen. The Myo will vibrate.
 			myo->notifyUserAction();
-			lastActivePose = currentPose;
 			
 		}
 		else {

@@ -15,5 +15,4 @@ public:
 	bool isActive;
 	myo::Arm whichArm;
 	myo::Pose currentPose = myo::Pose::rest;
-	myo::Pose lastActivePose = myo::Pose::rest;
 };
