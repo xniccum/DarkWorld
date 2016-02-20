@@ -8,6 +8,11 @@
 #include <myo/myo.hpp>
 #include <cstdio>
 #include <ctime>
+#include <SFML\Graphics.hpp>
+#include "ListenArea.h"
+
+
+#define SIZE 600
 
 using namespace std;
 using namespace cv;
@@ -105,10 +110,26 @@ int connectMyo()
 	}
 }
 
+void renderingThread(sf::RenderWindow* window)
+{
+	ListenArea * area = new ListenArea(SIZE / 2);
+	area->setCenter(window->getSize().x / 2, window->getSize().y / 2);
+
+	// the rendering loop
+	while (window->isOpen())
+	{
+		// clear the window with black color
+		window->clear(sf::Color::Black);
+
+		window->draw(area->getShape());
+		// end the current frame
+		window->display();
+	}
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	AllocConsole();
+	/*AllocConsole();
 	SetConsoleTitleA("DarkWorld v 0.2");
 
 
@@ -122,5 +143,29 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("Black Centroid (after): (%d,%d)\n", ans.at(1).x, ans.at(1).y);
 
 	connectMyo();
-	while (true) {};
+	while (true) {};*/
+	sf::RenderWindow window(sf::VideoMode(SIZE, SIZE), "OpenGL");
+
+	// deactivate its OpenGL context
+	window.setActive(false);
+
+	// launch the rendering thread
+	sf::Thread thread(&renderingThread, &window);
+	thread.launch();
+
+	// run the program as long as the window is open
+	while (window.isOpen())
+	{
+		// check all the window's events that were triggered since the last iteration of the loop
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+	}
+
+	return 0;
+
 }

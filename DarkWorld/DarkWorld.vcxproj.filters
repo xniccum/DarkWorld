@@ -30,6 +30,9 @@
     <ClInclude Include="MyoConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ListenArea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -44,5 +47,11 @@
     <ClCompile Include="ImageParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ListenArea.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
