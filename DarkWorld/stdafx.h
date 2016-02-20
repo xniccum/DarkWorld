@@ -18,5 +18,7 @@
 #include "ImageParser.h"
 #include <tchar.h>
 
+#include "MyoConnection.h"
+
 using namespace std;
 using namespace cv;
