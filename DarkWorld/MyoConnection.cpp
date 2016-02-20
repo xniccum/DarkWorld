@@ -62,7 +62,7 @@ public:
 	myo::Pose lastActivePose = myo::Pose::rest;
 };
 //Casually commenting this out, leaving it here until we can implement. 
-int main(int argc, char** argv)
+int fakeMain(int argc, char** argv)
 {
 	// We catch any exceptions that might occur below -- see the catch statement for more details.
 	try {

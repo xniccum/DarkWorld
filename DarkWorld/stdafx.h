@@ -16,6 +16,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "ImageParser.h"
+#include <tchar.h>
 
 using namespace std;
 using namespace cv;
