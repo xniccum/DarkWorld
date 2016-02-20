@@ -11,15 +11,15 @@ using namespace cv;
 char key;
 
 void getWebcamSnip() {
-	VideoCapture cap(1); // open the default camera
+	VideoCapture cap(1); // open the default camera 
 	if (!cap.isOpened())  // check if we succeeded
 		return;
 
 	Mat frame;
 	for (;;) {
-		cap.read(frame); //read in frame from webcam
-		imshow("live stream?", frame); //display image
-		if (waitKey(10) >= 0) break; //stop showing things if any key is pressed
+		cap.read(frame); //read in frame from webcam 
+		imshow("live s?", frame); //display image  
+		if (waitKey(10) >= 0) break; //stop showing things if any key is pressed 
 	}
 	imwrite("tmp.jpg", frame);
 }
