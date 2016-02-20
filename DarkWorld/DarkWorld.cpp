@@ -115,13 +115,17 @@ void renderingThread(sf::RenderWindow* window)
 	ListenArea * area = new ListenArea(SIZE / 2);
 	area->setCenter(window->getSize().x / 2, window->getSize().y / 2);
 
+	Actor * actor = new Actor("arrow-right.png");
+	actor->setCenter(window->getSize().x / 2, window->getSize().y / 2);
+
 	// the rendering loop
 	while (window->isOpen())
 	{
 		// clear the window with black color
-		window->clear(sf::Color::Black);
+		window->clear(sf::Color::White);
 
 		window->draw(area->getShape());
+		window->draw(actor->getSprite());
 		// end the current frame
 		window->display();
 	}

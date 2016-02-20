@@ -5,7 +5,7 @@ ListenArea::ListenArea(int radius = 300)
 {
 	this->shape = new sf::CircleShape(radius);
 	this->shape->setOutlineThickness(1);
-	shape->setOutlineColor(sf::Color::White);
+	shape->setOutlineColor(sf::Color::Black);
 	shape->setFillColor(sf::Color::Cyan);
 	this->setRadius(radius);
 }

@@ -90,6 +90,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="ImageParser.h" />
     <ClInclude Include="ListenArea.h" />
     <ClInclude Include="MyoConnection.h" />
@@ -97,6 +98,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="DarkWorld.cpp" />
     <ClCompile Include="ImageParser.cpp" />
     <ClCompile Include="ListenArea.cpp" />
@@ -108,6 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\arrow-right.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

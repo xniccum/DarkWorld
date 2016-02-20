@@ -17,8 +17,12 @@
 
 #include "ImageParser.h"
 #include <tchar.h>
-
+#include "ListenArea.h"
 #include "MyoConnection.h"
+#include <cstdio>
+#include <ctime>
+#include <SFML\Graphics.hpp>
+#include "Actor.h"
 
 using namespace std;
 using namespace cv;
