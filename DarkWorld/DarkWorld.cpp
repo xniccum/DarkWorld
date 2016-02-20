@@ -6,11 +6,17 @@
 #include <windows.h>
 #include "opencv2/opencv.hpp"
 #include <myo/myo.hpp>
+#include <cstdio>
+#include <ctime>
 
 using namespace std;
 using namespace cv;
 
 char key;
+//Setup timestamps
+std::time_t rawtime;
+std::tm* timeinfo;
+char buffer[80];
 
 void getWebcamSnip() {
 	VideoCapture cap(0); // open the default camera 
@@ -51,7 +57,7 @@ int connectMyo()
 		}
 
 		// We've found a Myo.
-		std::cout << "Connected to a Myo armband!" << std::endl << std::endl;
+		std::cout << "Connected to a Myo armband!" << "\tNow printing non-resting gestures..." << std::endl << std::endl;
 
 		// Next we construct an instance of our DeviceListener, so that we can register it with the Hub.
 		MyoConnection collector;
@@ -67,7 +73,12 @@ int connectMyo()
 			hub.run(1000 / 20);
 
 			if (collector.currentPose != myo::Pose::rest && collector.currentPose != myo::Pose::unknown){
-				std::cout << collector.lastActivePose << " - " << collector.currentPose << std::endl << std::endl;
+				std::time(&rawtime);
+				timeinfo = std::localtime(&rawtime);
+				std::strftime(buffer, 80, "[%H:%M:%S]\t", timeinfo);
+				//std::puts(buffer);
+
+				std::cout << buffer << collector.lastActivePose << " - " << collector.currentPose << std::endl << std::endl;
 			}
 		}
 
@@ -87,6 +98,8 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	AllocConsole();
 	SetConsoleTitleA("DarkWorld v 0.2");
+
+
 	freopen("conin$", "r", stdin);
 	freopen("conout$", "w", stdout);
 	freopen("conout$", "w", stderr);
