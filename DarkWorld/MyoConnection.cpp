@@ -27,7 +27,6 @@
 			// Notify the Myo that the pose has resulted in an action, in this case changing
 			// the text on the screen. The Myo will vibrate.
 			myo->notifyUserAction();
-			lastActivePose = currentPose;
 			
 		}
 		else {
@@ -44,6 +43,7 @@
 	{
 		onArm = true;
 		whichArm = arm;
+		currentMyo = myo;
 	}
 
 	// onArmUnsync() is called whenever Myo has detected that it was moved from a stable position on a person's arm after
@@ -53,5 +53,21 @@
 	{
 		onArm = false;
 	}
+	void MyoConnection::vibrate(int type)
+	{
+		switch (type){
+		case 0:
+			currentMyo->vibrate(myo::Myo::vibrationShort);
+			return;
+		case 1:
+			currentMyo->vibrate(myo::Myo::vibrationMedium);
+			return;
+		case 2:
+			currentMyo->vibrate(myo::Myo::vibrationLong);
+			return;
+		}
+		
+	}
 
+	
 

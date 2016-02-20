@@ -37,8 +37,25 @@ void getWebcamSnip() {
 	}
 	imwrite("tmp.jpg", frame);
 }
-
-//Casually commenting this out, leaving it here until we can implement. 
+//Converts gestures to stuff we like
+void mapToCommands(MyoConnection conn)
+{
+	if (conn.currentPose == myo::Pose::waveIn || conn.currentPose == myo::Pose::waveOut)
+	{
+		// "ATTACK"
+		std::cout << "Attack!" << std::endl << std::endl;
+		conn.vibrate(0);
+		return;
+	}
+	if (conn.currentPose == myo::Pose::fingersSpread)
+	{
+		// "SELECT"
+		std::cout << "Select" << std::endl << std::endl;
+		conn.vibrate(2);
+		return;
+	}
+}
+//Connects to Myo server and gets gestures
 int connectMyo()
 {
 	// We catch any exceptions that might occur below -- see the catch statement for more details.
@@ -48,7 +65,7 @@ int connectMyo()
 		// publishing your application. The Hub provides access to one or more Myos.
 		myo::Hub hub("com.darkworld.darkworld");
 		hub.setLockingPolicy(myo::Hub::lockingPolicyNone);
-
+		
 		std::cout << "Attempting to find a Myo..." << std::endl;
 
 		// Next, we attempt to find a Myo to use. If a Myo is already paired in Myo Connect, this will return that Myo
@@ -56,12 +73,13 @@ int connectMyo()
 		// waitForMyo() takes a timeout value in milliseconds. In this case we will try to find a Myo for 10 seconds, and
 		// if that fails, the function will return a null pointer.
 		myo::Myo* myo = hub.waitForMyo(10000);
-
+		
+		
 		// If waitForMyo() returned a null pointer, we failed to find a Myo, so exit with an error message.
 		if (!myo) {
 			throw std::runtime_error("Unable to find a Myo!");
 		}
-
+		
 		// We've found a Myo.
 		std::cout << "Connected to a Myo armband!" << "\tNow printing non-resting gestures..." << std::endl << std::endl;
 
@@ -71,7 +89,7 @@ int connectMyo()
 		// Hub::addListener() takes the address of any object whose class inherits from DeviceListener, and will cause
 		// Hub::run() to send events to all registered device listeners.
 		hub.addListener(&collector);
-
+		
 		// Finally we enter our main loop.
 		while (1) {
 			// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
@@ -83,8 +101,7 @@ int connectMyo()
 				timeinfo = std::localtime(&rawtime);
 				std::strftime(buffer, 80, "[%H:%M:%S]\t", timeinfo);
 				//std::puts(buffer);
-
-				std::cout << buffer << collector.lastActivePose << " - " << collector.currentPose << std::endl << std::endl;
+				mapToCommands(collector);
 				collector.isActive = true;
 			}
 			if (collector.onArm != lastStateOfSync){
@@ -130,6 +147,7 @@ void renderingThread(sf::RenderWindow* window)
 		window->display();
 	}
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
