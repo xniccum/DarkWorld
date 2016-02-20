@@ -1,4 +1,5 @@
 // sound x blitz.cpp : Defines the entry point for the console application.
+#pragma once
 #include "stdafx.h"
 
 #include <iostream>
@@ -27,10 +28,14 @@ void getWebcamSnip() {
 int _tmain(int argc, _TCHAR* argv[])
 {
 	AllocConsole();
-	SetConsoleTitleA("DarkWorld v 0.1");
+	SetConsoleTitleA("DarkWorld v 0.2");
 	freopen("conin$", "r", stdin);
 	freopen("conout$", "w", stdout);
 	freopen("conout$", "w", stderr);
-	getWebcamSnip();
-	return 0;
+
+	ImageParser IP;
+	std::vector<Point> ans = IP.getCoordinates(imread("../images/sleeve_1.jpg"));
+	printf("White Centroid (after): (%d,%d)\n", ans.at(0).x, ans.at(0).y);
+	printf("Black Centroid (after): (%d,%d)\n", ans.at(1).x, ans.at(1).y);
+	while (true) {};
 }

@@ -7,11 +7,15 @@
 
 #include "targetver.h"
 
-#include <stdio.h>
-#include <tchar.h>
-
-
 
 
 // TODO: reference additional headers your program requires here
 #include <myo/myo.hpp>
+#include <iostream>
+#include <windows.h>
+#include <opencv2/opencv.hpp>
+
+#include "ImageParser.h"
+
+using namespace std;
+using namespace cv;
