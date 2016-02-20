@@ -101,7 +101,7 @@ int main(int argc, char** argv)
 			// In this case, we wish to update our display 20 times a second, so we run for 1000/20 milliseconds.
 			hub.run(1000 / 20);
 			
-			if (collector.currentPose != myo::Pose::rest){
+			if (collector.currentPose != myo::Pose::rest && collector.currentPose != myo::Pose::unknown){
 				std::cout << collector.lastActivePose << " - " << collector.currentPose << std::endl << std::endl;
 			}
 		}
