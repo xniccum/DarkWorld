@@ -241,5 +241,6 @@ _Pvt_Extensions
 # JetBrains Rider
 .idea/
 *.sln.iml
-
-opencv*
+# Libraries
+libraries/opencv
+libraries/myo-sdk-win-0.9.0
