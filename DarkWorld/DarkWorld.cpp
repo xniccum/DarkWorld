@@ -17,6 +17,7 @@ char key;
 std::time_t rawtime;
 std::tm* timeinfo;
 char buffer[80];
+bool lastStateOfSync = true;
 
 void getWebcamSnip() {
 	VideoCapture cap(0); // open the default camera 
@@ -81,6 +82,16 @@ int connectMyo()
 				std::cout << buffer << collector.lastActivePose << " - " << collector.currentPose << std::endl << std::endl;
 				collector.isActive = true;
 			}
+			if (collector.onArm != lastStateOfSync){
+				lastStateOfSync = collector.onArm;
+				if (collector.onArm == true){
+					std::cout << "Myo resynchronized to arm" << std::endl << std::endl;
+				}
+				else {
+					std::cout << "Myo desynchronized." << std::endl << std::endl;
+				}
+			}
+			
 		}
 
 
