@@ -11,9 +11,8 @@ public:
 	Point* front;
 	Point* back;
 	Point* aim;
-
-private:
 	Actor* aimActor;
+private:
 };
 
 

@@ -209,6 +209,7 @@ void renderingThread(sf::RenderWindow* window)
 
 		window->draw(area->getShape());
 		window->draw(player->getSprite());
+		window->draw(player->aimActor->getSprite());
 		window->draw(e1->getSprite());
 		// end the current frame
 		window->display();
