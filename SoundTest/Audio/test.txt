@@ -1,0 +1,18 @@
+cantSeeUs_c.ogg > creepy1
+cough_conv.ogg > creepy2
+keepItDown_conv.ogg > creepy3
+ssh_c.ogg > creepy4
+
+carpetWalk_c.ogg > step_c
+
+game_pause_conv.ogg > pause
+game_resume_conv.ogg > resume
+
+lives_0_c.ogg > lives0
+lives_1_c.ogg > lives1
+lives_2_c.ogg > lives2
+lives_3_c.ogg > lives3
+
+crunchyWalk_c.ogg --unused
+eatingCereal_conv.ogg --unused
+heavyBreathing_conv.ogg  --unused

@@ -15,16 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PointSound.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="CommonSound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="..\Audio\cantSeeUs_c.ogg" />
+    <None Include="..\Audio\cough_conv.ogg" />
+    <None Include="..\Audio\eatingCereal_conv.ogg" />
+    <None Include="..\Audio\game_pause_conv.ogg" />
+    <None Include="..\Audio\game_resume_conv.ogg" />
+    <None Include="..\Audio\heavyBreathing_conv.ogg" />
+    <None Include="..\Audio\keepItDown_conv.ogg" />
+    <None Include="..\Audio\lives_0_c.ogg" />
+    <None Include="..\Audio\lives_1_c.ogg" />
+    <None Include="..\Audio\lives_2_c.ogg" />
+    <None Include="..\Audio\lives_3_c.ogg" />
+    <None Include="..\Audio\ssh_c.ogg" />
   </ItemGroup>
 </Project>
