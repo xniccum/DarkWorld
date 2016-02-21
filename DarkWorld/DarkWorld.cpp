@@ -56,14 +56,11 @@ void mapToCommands(MyoConnection conn)
 	}
 }
 //Connects to Myo server and gets gestures
-int connectMyo()
+int connectMyo(myo::Hub &hub, MyoConnection &collector)
 {
 	// We catch any exceptions that might occur below -- see the catch statement for more details.
 	try {
 
-		// First, we create a Hub with our application identifier. Be sure not to use the com.example namespace when
-		// publishing your application. The Hub provides access to one or more Myos.
-		myo::Hub hub("com.darkworld.darkworld");
 		hub.setLockingPolicy(myo::Hub::lockingPolicyNone);
 		
 		std::cout << "Attempting to find a Myo..." << std::endl;
@@ -83,38 +80,12 @@ int connectMyo()
 		// We've found a Myo.
 		std::cout << "Connected to a Myo armband!" << "\tNow printing non-resting gestures..." << std::endl << std::endl;
 
-		// Next we construct an instance of our DeviceListener, so that we can register it with the Hub.
-		MyoConnection collector;
 
 		// Hub::addListener() takes the address of any object whose class inherits from DeviceListener, and will cause
 		// Hub::run() to send events to all registered device listeners.
 		hub.addListener(&collector);
 		
-		// Finally we enter our main loop.
-		while (1) {
-			// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
-			// In this case, we wish to update our display 20 times a second, so we run for 1000/20 milliseconds.
-			hub.run(1000 / 20);
 
-			if (collector.currentPose != myo::Pose::rest && collector.currentPose != myo::Pose::unknown && collector.isActive == false){
-				std::time(&rawtime);
-				timeinfo = std::localtime(&rawtime);
-				std::strftime(buffer, 80, "[%H:%M:%S]\t", timeinfo);
-				//std::puts(buffer);
-				mapToCommands(collector);
-				collector.isActive = true;
-			}
-			if (collector.onArm != lastStateOfSync){
-				lastStateOfSync = collector.onArm;
-				if (collector.onArm == true){
-					std::cout << "Myo resynchronized to arm" << std::endl << std::endl;
-				}
-				else {
-					std::cout << "Myo desynchronized." << std::endl << std::endl;
-				}
-			}
-			
-		}
 
 
 		// If a standard exception occurred, we print out its message and exit.
@@ -127,7 +98,29 @@ int connectMyo()
 	}
 }
 
+void myoLoop(myo::Hub &hub, MyoConnection &collector, int DISPLAY_UPDATE_MS){
+	// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
+	// In this case, we wish to update our display 20 times a second, so we run for 1000/20 milliseconds.
+	hub.run(1000 / DISPLAY_UPDATE_MS);
 
+	if (collector.currentPose != myo::Pose::rest && collector.currentPose != myo::Pose::unknown && collector.isActive == false){
+		std::time(&rawtime);
+		timeinfo = std::localtime(&rawtime);
+		std::strftime(buffer, 80, "[%H:%M:%S]\t", timeinfo);
+		//std::puts(buffer);
+		mapToCommands(collector);
+		collector.isActive = true;
+	}
+	if (collector.onArm != lastStateOfSync){
+		lastStateOfSync = collector.onArm;
+		if (collector.onArm == true){
+			std::cout << "Myo resynchronized to arm" << std::endl << std::endl;
+		}
+		else {
+			std::cout << "Myo desynchronized." << std::endl << std::endl;
+		}
+	}
+}
 
 void renderingThread(sf::RenderWindow* window)
 {
@@ -189,10 +182,56 @@ int _tmain(int argc, _TCHAR* argv[])
 	AllocConsole();
 	SetConsoleTitleA("DarkWorld v 0.2");
 
+	/*
+	// Start Myo
+		// First, we create a Hub with our application identifier. The Hub provides access to one or more Myos.
+	myo::Hub hub("com.darkworld.darkworld");
+		// Next we construct an instance of our DeviceListener, so that we can register it with the Hub.
+	MyoConnection collector;
+		// Then we configure them both with this fancy helper function.
+	connectMyo(hub, collector);
+
+// Put this in the main game loop:
+	int DISPLAY_UPDATE_MS = 20; // <- how many times per second do we update? Relevant to Myo server
+	myoLoop(hub, collector, DISPLAY_UPDATE_MS);
+
+	*/
+
 	//Start Audio
 	CommonSound sound;
 
 	sound.playMenuSound(0);
+
+	//3D sound and the FMOD channel management system need to be updated once per frame. See below for a shitty loop
+
+	// DO the following in the game loop for updating sound:
+	//_> update game sounds (move bad guy's sound loc)
+	//Don't forget that (+x = +right, +y = +up, +z = + ahead)
+	sound.updateEnemySound(sound.convertVector(0.0, 0.0, 2.0), sound.convertVector(0.0, 0.0, 0.0));
+
+	// Maybe play enemy sound. We should do this randomly
+	sound.playEnemySound();
+
+	sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
+
+
+	int iters = 0;
+	std::cout << "Starting shitty example loop" << std::endl;
+// This stuff goes in the main game loop. Replicated in loop form here so you can hear Zach walking away. 
+	while (iters < 10){ 
+		// Update game sounds (move bad guy)
+		sound.updateEnemySound(sound.convertVector(0.0, 0.0, 2.0+iters), sound.convertVector(0.0, 0.0, 0.25));
+		// Update your position ( Position, Velocity, Unit vector heading)
+		sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
+
+		// Update sound engine. Do this before updating graphics.
+		sound.callUpdate();
+
+		//don't put below in the main game loop :P
+		Sleep(500);
+		std::cout << "Iter " << iters << " complete" <<std::endl;
+		iters++;
+	}
 
 	//freopen("conin$", "r", stdin);
 	//freopen("conout$", "w", stdout);

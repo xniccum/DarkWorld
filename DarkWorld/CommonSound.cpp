@@ -49,7 +49,7 @@ CommonSound::CommonSound()
 	ERRCHECK(result);
 
 	//Look! 3D
-	result = fms_system->createSound("../Audio/lives_3_c.ogg", FMOD_3D, 0, &s_step_c);
+	result = fms_system->createSound("../Audio/carpetWalk_c.ogg", FMOD_3D, 0, &s_step_c);
 	ERRCHECK(result);
 	//Setup this as a 3d position
 	s_step_c->set3DMinMaxDistance(0.25f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
@@ -106,3 +106,12 @@ void CommonSound::updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &vel, FMO
 	// FMOD Uses a left handed coordinate
 	// system by default, (+X = right, +Y = up, +Z = forwards)
 */
+FMOD_VECTOR CommonSound::convertVector(float x, float y, float z)
+{
+	FMOD_VECTOR vec = { 1.0f * x, 1.0f * y, 1.0f * z};
+	return vec;
+}
+void CommonSound::callUpdate()
+{
+	fms_system->update();
+}

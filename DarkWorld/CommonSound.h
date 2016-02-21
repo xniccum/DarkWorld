@@ -35,6 +35,7 @@ public:
 	void updateEnemySound(FMOD_VECTOR &pos, FMOD_VECTOR &vel);
 	void playEnemySound();
 	void updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &vel, FMOD_VECTOR &forward);
-
+	FMOD_VECTOR convertVector(float x, float y, float z);
+	void callUpdate();
 
 };
