@@ -7,9 +7,6 @@
 
 #include "targetver.h"
 
-
-
-// TODO: reference additional headers your program requires here
 #include <myo/myo.hpp>
 #include <iostream>
 #include <windows.h>
@@ -27,6 +24,7 @@
 #include <SFML\Graphics.hpp>
 #include "Actor.h"
 #include "Player.h"
+#include "Enemy.h"
 
 
 using namespace std;

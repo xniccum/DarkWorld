@@ -5,14 +5,13 @@
 Actor::Actor(std::string filename)
 {
 	this->texture = new sf::Texture();
-	if (!this->texture->loadFromFile("arrow-right.png")) {
+	if (!this->texture->loadFromFile(filename)) {
 		printf("error");
 		return;
 	}
 	this->sprite = new sf::Sprite(*this->texture);
 	this->sprite->rotate(-90);
 }
-
 
 Actor::~Actor()
 {

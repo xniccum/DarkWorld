@@ -23,6 +23,7 @@ char buffer[80];
 bool lastStateOfSync = true;
 ListenArea * area;
 Player * player;
+Enemy * e1;
 
 void getWebcamSnip() {
 	VideoCapture cap(0); // open the default camera 
@@ -124,9 +125,15 @@ void myoLoop(myo::Hub &hub, MyoConnection &collector, int DISPLAY_UPDATE_MS){
 
 void renderingThread(sf::RenderWindow* window)
 {
+	sf::Clock* clock = new sf::Clock();
+	clock->restart();
+	float start = clock->getElapsedTime().asMilliseconds();
+	printf("%f",start);
 	// the rendering loop
 	while (window->isOpen())
 	{
+		float milisec = clock->getElapsedTime().asMilliseconds() - start;
+		printf("%f", milisec);
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
 		while (window->pollEvent(event))
@@ -151,29 +158,16 @@ void renderingThread(sf::RenderWindow* window)
 		{
 			player->move(0, 0.1);
 		}
+		e1->updatePosition(milisec);
 
 		// clear the window with black color
 		window->clear(sf::Color::White);
 
 		window->draw(area->getShape());
 		window->draw(player->getSprite());
+		window->draw(e1->getSprite());
 		// end the current frame
 		window->display();
-	}
-}
-
-void eventThread(sf::RenderWindow* window) {
-	while (window->isOpen())
-	{
-		// check all the window's events that were triggered since the last iteration of the loop
-		sf::Event event;
-		while (window->pollEvent(event))
-		{
-			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed)
-				window->close();
-		}
-		
 	}
 }
 
@@ -254,13 +248,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	player = new Player("arrow-right.png");
 	player->setCenter(window->getSize().x / 2, window->getSize().y / 2);
+	e1 = new Enemy("circle.gif",6,6, 100);
+	e1->setCenter(window->getSize().x / 4, window->getSize().y / 4);
 	area->setCenter(window->getSize().x / 2, window->getSize().y / 2);
 
 	// launch the rendering thread
 	sf::Thread renderThread(&renderingThread, window);
-	//sf::Thread eventThread(&eventThread, window);
 	renderThread.launch();
-	//eventThread.launch();
 
 	while (window->isOpen())
 	{

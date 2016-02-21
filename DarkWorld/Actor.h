@@ -11,6 +11,7 @@ public:
 	void setCenter(float x, float y);
 	void move(float x, float y);
 	void rotate(float degree);
+
 	//for image rec
 	Point* getLoc();
 	void setLoc(int x, int y);
