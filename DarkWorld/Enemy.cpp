@@ -32,8 +32,8 @@ void Enemy::updatePosition(float time_seconds){
 }
 
 int Enemy::levelUp() {
-	MAX_TANGENTIAL_VELECITY += 0.25;//increase the tangential velocity of the enemy. 
-	MAX_RAD_VELECITY += 0.10;//increase the max radial velocity of the 
+	MAX_TANGENTIAL_VELECITY = MAX_TANGENTIAL_VELECITY*0.25;//increase the tangential velocity of the enemy. 
+	MAX_RAD_VELECITY= MAX_RAD_VELECITY*0.10;//increase the max radial velocity of the 
 	return level++;
 }
 

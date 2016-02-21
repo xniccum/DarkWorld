@@ -45,6 +45,13 @@ void mapToCommands(MyoConnection conn)
 	if (conn.currentPose == myo::Pose::waveIn || conn.currentPose == myo::Pose::waveOut)
 	{
 		// "ATTACK"
+		// "ATTACK"
+		if (player->isHit(e1)){
+			delete(e1);
+			e1 = e1 = new Enemy("circle.gif", 6, 6, 100);
+			conn.vibrate(0);
+		}
+		return;
 		std::cout << "Attack!" << std::endl << std::endl;
 		conn.vibrate(0);
 		return;
