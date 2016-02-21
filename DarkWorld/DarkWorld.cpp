@@ -140,6 +140,10 @@ void annoyPlayer(){
 }
 
 void audioLoop(){
+	/*
+	// FMOD Uses a left handed coordinate
+	// system by default, (+X = right, +Y = up, +Z = forwards)
+	*/
 	// Update game sounds (move bad guy)
 	Point* loc = e1->getLoc();
 	sound.updateEnemySound(sound.convertVector(loc->x, 0.0, loc->y));

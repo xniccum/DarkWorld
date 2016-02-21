@@ -36,10 +36,11 @@ CommonSound::CommonSound()
 		exit(EXIT_FAILURE);
 	}
 
-	fms_system->init(32, FMOD_INIT_NORMAL, extradriverdata);
+	fms_system->init(32, FMOD_INIT_3D_RIGHTHANDED, extradriverdata);
 
 	fms_system->set3DSettings(1.0, DISTANCEFACTOR, 1.0f);
 
+	
 
 	ready = true;
 	result = fms_system->createSound("../Audio/p228-1.wav", FMOD_DEFAULT, 0, &s_fire);
