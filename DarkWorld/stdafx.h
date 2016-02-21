@@ -25,6 +25,7 @@
 #include <ctime>
 #include <SFML\Graphics.hpp>
 #include "Actor.h"
+#include "Player.h"
 
 
 using namespace std;

@@ -8,11 +8,9 @@
 #include <myo/myo.hpp>
 #include <cstdio>
 #include <ctime>
-#include <SFML\Graphics.hpp>
-#include "ListenArea.h"
 
 
-#define SIZE 600
+#define SIZE 700
 
 using namespace std;
 using namespace cv;
@@ -24,7 +22,7 @@ std::tm* timeinfo;
 char buffer[80];
 bool lastStateOfSync = true;
 ListenArea * area;
-Actor * actor;
+Player * player;
 
 void getWebcamSnip() {
 	VideoCapture cap(0); // open the default camera 
@@ -134,11 +132,36 @@ void renderingThread(sf::RenderWindow* window)
 	// the rendering loop
 	while (window->isOpen())
 	{
+		// check all the window's events that were triggered since the last iteration of the loop
+		sf::Event event;
+		while (window->pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed)
+				window->close();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			player->move(-0.1, 0);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			player->move(0.1, 0);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			player->move(0, -0.1);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			player->move(0, 0.1);
+		}
+
 		// clear the window with black color
 		window->clear(sf::Color::White);
 
 		window->draw(area->getShape());
-		window->draw(actor->getSprite());
+		window->draw(player->getSprite());
 		// end the current frame
 		window->display();
 	}
@@ -154,26 +177,8 @@ void eventThread(sf::RenderWindow* window) {
 			// "close requested" event: we close the window
 			if (event.type == sf::Event::Closed)
 				window->close();
-			if (event.type == sf::Event::KeyPressed) {
-				printf("333");
-			}
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			actor->move(-0.1, 0);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			actor->move(0.1, 0);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		{
-			actor->move(0, -0.1);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			actor->move(0, 0.1);
-		}
+		
 	}
 }
 
@@ -183,9 +188,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	SetConsoleTitleA("DarkWorld v 0.2");
 
 
-	freopen("conin$", "r", stdin);
-	freopen("conout$", "w", stdout);
-	freopen("conout$", "w", stderr);
+	//freopen("conin$", "r", stdin);
+	//freopen("conout$", "w", stdout);
+	//freopen("conout$", "w", stderr);
 
 	/*
 	ImageParser IP;
@@ -202,15 +207,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	area = new ListenArea(SIZE / 2);
 
-	actor = new Actor("arrow-right.png");
-	actor->setCenter(window->getSize().x / 2, window->getSize().y / 2);
+	player = new Player("arrow-right.png");
+	player->setCenter(window->getSize().x / 2, window->getSize().y / 2);
 	area->setCenter(window->getSize().x / 2, window->getSize().y / 2);
 
 	// launch the rendering thread
 	sf::Thread renderThread(&renderingThread, window);
-	sf::Thread eventThread(&eventThread, window);
+	//sf::Thread eventThread(&eventThread, window);
 	renderThread.launch();
-	eventThread.launch();
+	//eventThread.launch();
+
+	while (window->isOpen())
+	{
+		
+	}
 	return 0;
 
 }

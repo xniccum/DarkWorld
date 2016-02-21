@@ -27,11 +27,12 @@ void Actor::setCenter(float x, float y) {
 }
 
 void Actor::move(float x, float y) {
-	int spriteX = this->sprite->getPosition().x;
-	int spriteY = this->sprite->getPosition().y;
+	float spriteX = this->sprite->getPosition().x;
+	float spriteY = this->sprite->getPosition().y;
+
 	this->setCenter(spriteX + x, spriteY + y);
-	this->loc->x += x;
-	this->loc->y += y;
+	//this->loc->x += x;
+	//this->loc->y += y;
 }
 
 void Actor::rotate(float degree) {
