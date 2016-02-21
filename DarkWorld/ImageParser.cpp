@@ -170,14 +170,3 @@ int * ImageParser::getCoordinates(Mat img, bool debug) {
 	int toReturn[6] = { greenCentroid.x, greenCentroid.y, whiteCentroid.x, whiteCentroid.y, armCentroid.x, armCentroid.y };
 	return toReturn;
 }
-
-
-
-int targetX, targetY;
-int curX, curY;
-
-targetX -= curX;
-targetY -= curY;
-
-targetTheta = atan(targetX / targetY);
-ourTheta = atan(((greenY + whiteY) / 2) / ((greenX + whiteX) / 2));
