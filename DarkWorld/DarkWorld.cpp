@@ -135,6 +135,7 @@ void myoLoop(int DISPLAY_UPDATE_MS){
 	}
 }
 
+
 void annoyPlayer(){
 	sound.playEnemySound();
 }
@@ -242,6 +243,16 @@ void renderingThread(sf::RenderWindow* window)
 		// end the current frame
 		window->display();
 	}
+}
+//returns the unit vector of the enemy.
+Point unitVectorOfEnemy()
+{
+	Point* location = e1->getLoc();
+	float vectorMagnitude = sqrt((location->x)*(location->x) + (location->y)*(location->y));
+	float newX = (location->x) / vectorMagnitude;
+	float newY = (location->y) / vectorMagnitude;
+	Point unitVector = Point(newX, newY);
+	return unitVector;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
