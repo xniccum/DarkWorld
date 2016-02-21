@@ -28,10 +28,27 @@ void Actor::setCenter(float x, float y) {
 	//this->sprite->setRotation(rotation);
 }
 
-void Actor::rotate(int degree) {
+void Actor::rotate(float degree) {
 	this->sprite->rotate(degree);
 }
 
 sf::Sprite Actor::getSprite() {
 	return *sprite;
+}
+
+Point* Actor::getLoc() {
+	return this->loc;
+}
+
+void Actor::setLoc(int x, int y) {
+	this->loc->x = x;
+	this->loc->y = y;
+}
+
+bool Actor::inRange(Actor* actor, int range) {
+	return this->distance(actor) < range;
+}
+
+int Actor::distance(Actor* actor) {
+	return (int)sqrt(pow(actor->loc->x - loc->x, 2) + pow(actor->loc->y - loc->y, 2));
 }

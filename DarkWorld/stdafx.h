@@ -15,6 +15,7 @@
 #include <windows.h>
 #include <opencv2/opencv.hpp>
 
+#include <math.h>
 #include "ImageParser.h"
 #include <tchar.h>
 #include "ListenArea.h"
@@ -23,6 +24,7 @@
 #include <ctime>
 #include <SFML\Graphics.hpp>
 #include "Actor.h"
+
 
 using namespace std;
 using namespace cv;

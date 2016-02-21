@@ -94,8 +94,10 @@
     <ClInclude Include="ImageParser.h" />
     <ClInclude Include="ListenArea.h" />
     <ClInclude Include="MyoConnection.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="VectorMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
@@ -103,6 +105,7 @@
     <ClCompile Include="ImageParser.cpp" />
     <ClCompile Include="ListenArea.cpp" />
     <ClCompile Include="MyoConnection.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

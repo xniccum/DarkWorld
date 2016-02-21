@@ -23,6 +23,8 @@ std::time_t rawtime;
 std::tm* timeinfo;
 char buffer[80];
 bool lastStateOfSync = true;
+ListenArea * area;
+Actor * actor;
 
 void getWebcamSnip() {
 	VideoCapture cap(0); // open the default camera 
@@ -129,12 +131,6 @@ int connectMyo()
 
 void renderingThread(sf::RenderWindow* window)
 {
-	ListenArea * area = new ListenArea(SIZE / 2);
-	area->setCenter(window->getSize().x / 2, window->getSize().y / 2);
-
-	Actor * actor = new Actor("arrow-right.png");
-	actor->setCenter(window->getSize().x / 2, window->getSize().y / 2);
-
 	// the rendering loop
 	while (window->isOpen())
 	{
@@ -148,10 +144,34 @@ void renderingThread(sf::RenderWindow* window)
 	}
 }
 
+void eventThread(sf::RenderWindow* window) {
+	while (window->isOpen())
+	{
+		// check all the window's events that were triggered since the last iteration of the loop
+		sf::Event event;
+		while (window->pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed)
+				window->close();
+			if (event.type == sf::Event::KeyPressed) {
+				printf("333");
+			}
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			actor->rotate(-0.001);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			actor->rotate(0.001);
+		}
+	}
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	/*AllocConsole();
+	AllocConsole();
 	SetConsoleTitleA("DarkWorld v 0.2");
 
 
@@ -159,6 +179,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	freopen("conout$", "w", stdout);
 	freopen("conout$", "w", stderr);
 
+	/*
 	ImageParser IP;
 	std::vector<Point> ans = IP.getCoordinates(imread("../images/sleeve_1.jpg"));
 	printf("White Centroid (after): (%d,%d)\n", ans.at(0).x, ans.at(0).y);
@@ -166,28 +187,22 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	connectMyo();
 	while (true) {};*/
-	sf::RenderWindow window(sf::VideoMode(SIZE, SIZE), "OpenGL");
+	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(SIZE, SIZE), "OpenGL");
 
 	// deactivate its OpenGL context
-	window.setActive(false);
+	window->setActive(false);
+
+	area = new ListenArea(SIZE / 2);
+
+	actor = new Actor("arrow-right.png");
+	actor->setCenter(window->getSize().x / 2, window->getSize().y / 2);
+	area->setCenter(window->getSize().x / 2, window->getSize().y / 2);
 
 	// launch the rendering thread
-	sf::Thread thread(&renderingThread, &window);
-	thread.launch();
-
-	// run the program as long as the window is open
-	while (window.isOpen())
-	{
-		// check all the window's events that were triggered since the last iteration of the loop
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-	}
-
+	sf::Thread renderThread(&renderingThread, window);
+	sf::Thread eventThread(&eventThread, window);
+	renderThread.launch();
+	eventThread.launch();
 	return 0;
 
 }

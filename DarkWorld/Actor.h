@@ -8,8 +8,14 @@ public:
 	~Actor();
 	sf::Sprite getSprite();
 	void setCenter(float x, float y);
-	void rotate(int degree);
+	void rotate(float degree);
+	Point* getLoc();
+	void setLoc(int x, int y);
+	bool inRange(Actor* actor, int range);
+protected:
+	int distance(Actor* actor);
 private:
+	Point* loc;
 	sf::Texture* texture;
 	sf::Sprite* sprite;
 };
