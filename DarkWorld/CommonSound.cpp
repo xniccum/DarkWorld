@@ -42,6 +42,13 @@ CommonSound::CommonSound()
 
 
 	ready = true;
+	result = fms_system->createSound("../Audio/p228-1.wav", FMOD_DEFAULT, 0, &s_fire);
+	ERRCHECK(result);
+
+	ready = true;
+	result = fms_system->createSound("../Audio/grenade_impact.wav", FMOD_3D, 0, &s_hit);
+	s_hit->set3DMinMaxDistance(2.0f * DISTANCEFACTOR, 5000.0f * DISTANCEFACTOR);
+	ERRCHECK(result);
 
 	result = fms_system->createSound("../Audio/game_pause_conv.ogg", FMOD_DEFAULT, 0, &s_pause);
 	ERRCHECK(result);
@@ -84,6 +91,14 @@ void CommonSound::playMenuSound(int sound)
 void CommonSound::playEnemySound()
 {
 	fms_system->playSound(s_step_c, 0, false, &enemy_sounds);
+}
+void CommonSound::playEnemyHit()
+{
+	fms_system->playSound(s_hit, 0, false, &enemy_sounds);
+}
+void CommonSound::playShoot()
+{
+	fms_system->playSound(s_fire, 0, false, &menu);
 }
 void CommonSound::updateEnemySound(FMOD_VECTOR &pos)
 {

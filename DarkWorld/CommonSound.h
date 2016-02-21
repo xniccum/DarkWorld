@@ -11,7 +11,7 @@ private:
 	float last_x = 0, last_y = 0, last_z = 0;
 
 	FMOD::System     *fms_system;
-	FMOD::Sound      *s_creepy1, *s_creepy2, *s_creepy3, *s_creepy4, *s_step_c, *s_pause, *s_resume, *s_lives0, *s_lives1, *s_lives2, *s_lives3;
+	FMOD::Sound      *s_creepy1, *s_creepy2, *s_creepy3, *s_creepy4, *s_step_c, *s_pause, *s_resume, *s_lives0, *s_lives1, *s_lives2, *s_lives3, *s_fire, *s_hit;
 	FMOD::Channel    *menu = 0, *enemy_sounds = 0;
 	FMOD_RESULT       result;
 	unsigned int      version;
@@ -34,6 +34,8 @@ public:
 	// Velocity: enemy velocity
 	void updateEnemySound(FMOD_VECTOR &pos);
 	void playEnemySound();
+	void playEnemyHit();
+	void playShoot();
 	void updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &forward);
 	FMOD_VECTOR convertVector(float x, float y, float z);
 	void callUpdate();

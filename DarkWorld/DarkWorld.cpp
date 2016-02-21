@@ -46,14 +46,17 @@ void mapToCommands(MyoConnection conn)
 	{
 		// "ATTACK"
 		// "ATTACK"
+		sound.playShoot();
+		conn.vibrate(0);
 		if (player->isHit(e1)){
+			sound.playEnemyHit();
 			delete(e1);
 			e1 = e1 = new Enemy("circle.gif", 6, 6, 100);
 			conn.vibrate(0);
 		}
 		return;
 		std::cout << "Attack!" << std::endl << std::endl;
-		conn.vibrate(0);
+
 		return;
 	}
 	if (conn.currentPose == myo::Pose::fingersSpread)
@@ -132,11 +135,17 @@ void myoLoop(int DISPLAY_UPDATE_MS){
 	}
 }
 
+void annoyPlayer(){
+	sound.playEnemySound();
+}
+
 void audioLoop(){
 	// Update game sounds (move bad guy)
-	sound.updateEnemySound(sound.convertVector(0.0, 0.0, 2.0));
+	Point* loc = e1->getLoc();
+	sound.updateEnemySound(sound.convertVector(loc->x, 0.0, loc->y));
 	// Update your position ( Position, Velocity, Unit vector heading)
-	sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
+	loc = player->getLoc();
+	sound.updateListener(sound.convertVector(loc->x, 0.0, loc->y), sound.convertVector(0.0, 0.0, 1.0));
 
 	// Update sound engine. Do this before updating graphics.
 	sound.callUpdate();
@@ -176,13 +185,21 @@ void renderingThread(sf::RenderWindow* window)
 	float start = clock->getElapsedTime().asMilliseconds();
 	//printf("%f",start);
 	// the rendering loop
+	int count = 0;
+	int maxCount = 20 * 10;
+
 	while (window->isOpen())
 	{
 		float milisec = clock->getElapsedTime().asMilliseconds() - start;
 		//printf("%f", milisec);
 
 		if ((int)milisec % 50 == 0){
+			if (count > maxCount){
+				count = 0;
+				annoyPlayer();
+			}
 			gameUpdate();
+			count++;
 		}
 
 		// check all the window's events that were triggered since the last iteration of the loop
