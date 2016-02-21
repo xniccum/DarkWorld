@@ -5,7 +5,7 @@
 
 Player::Player(std::string filename) : Actor(filename)
 {
-	this->front = new Point(0,1);
+	this->front = new Point(0, 1);
 	this->back = new Point(0, -1);
 	this->aim = new Point(0, 0);
 	this->aimActor = new Actor(filename);
@@ -16,11 +16,11 @@ Player::~Player()
 {
 }
 
-void Player::computerDirections(float* points) {
-	this->front = new Point(points[0], points[1]);
-	this->back = new Point(points[2], points[3]);
-	this->aim = new Point(points[4], points[5]);
-	
+void Player::computerDirections(std::vector<Point> points) {
+	this->front = &points.at(0);
+	this->back = &points.at(1);
+	this->aim = &points.at(2);
+
 	//get center of player
 	int centerX = (front->x + back->x) / 2;
 	int centerY = (front->x + back->x) / 2;
@@ -34,15 +34,13 @@ void Player::computerDirections(float* points) {
 	this->aimActor->getSprite().setRotation(atan2(aim->y, aim->x));
 }
 
-bool Player::isHit(Actor* actor, int range,int tolarance) {
+bool Player::isHit(Actor* actor, int range, int tolarance) {
 	if (!inRange(actor, range))
 		return false;
 
-	int targetTheta = atan2(actor->getLoc()->y,actor->getLoc()->x);
-	int ourTheta = atan2(this->aim->y,this->aim->x);
+	int targetTheta = atan2(actor->getLoc()->y, actor->getLoc()->x);
+	int ourTheta = atan2(this->aim->y, this->aim->x);
 
 	return abs(targetTheta - ourTheta) < tolarance;
 }
-
-
 

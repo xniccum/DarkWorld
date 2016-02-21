@@ -12,9 +12,11 @@
 
 #define SIZE 700
 
+
 using namespace std;
 using namespace cv;
 
+VideoCapture cap(0); // open the default camera 
 char key;
 //Setup timestamps
 std::time_t rawtime;
@@ -37,19 +39,6 @@ MyoConnection collector;
 // Construct our sound.
 CommonSound sound;
 
-void getWebcamSnip() {
-	VideoCapture cap(0); // open the default camera 
-	if (!cap.isOpened())  // check if we succeeded
-		return;
-
-	Mat frame;
-	for (;;) {
-		cap.read(frame); //read in frame from webcam 
-		imshow("live s?", frame); //display image  
-		if (waitKey(10) >= 0) break; //stop showing things if any key is pressed 
-	}
-	imwrite("tmp.jpg", frame);
-}
 //Converts gestures to stuff we like
 void mapToCommands(MyoConnection conn)
 {
@@ -71,11 +60,11 @@ void mapToCommands(MyoConnection conn)
 //Connects to Myo server and gets gestures
 int connectMyo()
 {
-	// We catch any exceptions that might occur below -- see the catch statement for more details.
+	// We catch any exceptions that might occur below — see the catch statement for more details.
 	try {
 
 		hub.setLockingPolicy(myo::Hub::lockingPolicyNone);
-		
+
 		std::cout << "Attempting to find a Myo..." << std::endl;
 
 		// Next, we attempt to find a Myo to use. If a Myo is already paired in Myo Connect, this will return that Myo
@@ -83,13 +72,13 @@ int connectMyo()
 		// waitForMyo() takes a timeout value in milliseconds. In this case we will try to find a Myo for 10 seconds, and
 		// if that fails, the function will return a null pointer.
 		myo::Myo* myo = hub.waitForMyo(10000);
-		
-		
+
+
 		// If waitForMyo() returned a null pointer, we failed to find a Myo, so exit with an error message.
 		if (!myo) {
 			throw std::runtime_error("Unable to find a Myo!");
 		}
-		
+
 		// We've found a Myo.
 		std::cout << "Connected to a Myo armband!" << "\tNow printing non-resting gestures..." << std::endl << std::endl;
 
@@ -97,7 +86,7 @@ int connectMyo()
 		// Hub::addListener() takes the address of any object whose class inherits from DeviceListener, and will cause
 		// Hub::run() to send events to all registered device listeners.
 		hub.addListener(&collector);
-		
+
 
 
 
@@ -145,13 +134,32 @@ void audioLoop(){
 	// Update sound engine. Do this before updating graphics.
 	sound.callUpdate();
 }
-
-
 void gameUpdate(){
 	//Myo 
 	int update_interval = 20; // <- how many MS per update
 	myoLoop(update_interval);
 	audioLoop();
+}
+
+void videoUpdate(){
+	ImageParser IP;
+	if (!cap.isOpened())  // check if we succeeded
+		return;
+
+	Mat frame;
+	cap.read(frame); //read in frame from webcam 
+	std::vector<Point> points = IP.getCoordinates(frame, 1);
+
+	bool failCheck1 = points.at(0).x < 0 || points.at(0).x >= frame.cols;
+	bool failCheck2 = points.at(0).y < 0 || points.at(0).y >= frame.rows;
+	bool failCheck3 = points.at(1).x < 0 || points.at(1).x >= frame.cols;
+	bool failCheck4 = points.at(1).y < 0 || points.at(1).y >= frame.rows;
+	bool failCheck5 = points.at(2).x < 0 || points.at(2).x >= frame.cols;
+	bool failCheck6 = points.at(2).y < 0 || points.at(2).y >= frame.rows;
+
+	if (!(failCheck1 || failCheck2 || failCheck3 || failCheck4 || failCheck5 || failCheck6)) {
+		player->computerDirections(points);
+	}
 }
 
 void renderingThread(sf::RenderWindow* window)
@@ -212,10 +220,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	AllocConsole();
 	SetConsoleTitleA("DarkWorld v 0.2");
 
-//Myo
+	//Myo
 	// Connect hub to collector (these be globals here)
 	connectMyo();
-//Audio	
+	//Audio  
 	//Inform that the game is paused
 	sound.playMenuSound(0);
 	//initialize enemy sound source as 2m in front of player
@@ -223,26 +231,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	// initialize player at 0,0, looking straight "north?"
 	sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
 
-// play enemy sound. We should do this randomly
+	// play enemy sound. We should do this randomly
 	//The enemy sound sample is 10 seconds long!
-//sound.playEnemySound();
-
-
-
-
-
-
+	//sound.playEnemySound();
 	/*
 	//freopen("conin$", "r", stdin);
 	//freopen("conout$", "w", stdout);
 	//freopen("conout$", "w", stderr);
-
-
-	ImageParser IP;
-	std::vector<Point> ans = IP.getCoordinates(imread("../images/sleeve_1.jpg"));
-	printf("White Centroid (after): (%d,%d)\n", ans.at(0).x, ans.at(0).y);
-	printf("Black Centroid (after): (%d,%d)\n", ans.at(1).x, ans.at(1).y);
-*/
+	*/
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(SIZE, SIZE), "OpenGL");
 
 	// deactivate its OpenGL context
@@ -252,7 +248,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	player = new Player("arrow-right.png");
 	player->setCenter(window->getSize().x / 2, window->getSize().y / 2);
-	e1 = new Enemy("circle.gif",6,6, 100);
+	e1 = new Enemy("circle.gif", 6, 6, 100);
 	e1->setCenter(window->getSize().x / 4, window->getSize().y / 4);
 	area->setCenter(window->getSize().x / 2, window->getSize().y / 2);
 
@@ -262,8 +258,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	while (window->isOpen())
 	{
-		
+
 	}
 	return 0;
 
 }
+

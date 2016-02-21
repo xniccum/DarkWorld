@@ -6,7 +6,7 @@ class Player :
 public:
 	Player(std::string filename);
 	~Player();
-	void computerDirections(float* points);
+	void computerDirections(std::vector<Point> points);
 	bool isHit(Actor* actor, int range = 700, int tolarance = 15);
 	Point* front;
 	Point* back;
@@ -15,4 +15,6 @@ public:
 private:
 	Actor* aimActor;
 };
+
+
 
