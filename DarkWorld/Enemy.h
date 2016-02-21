@@ -18,8 +18,8 @@ public:
 private:
 	float mov_ratio;
 	int level = 0;
-	const float MAX_RAD_VELECITY = 0.25;
-	const float MAX_TANGENTIAL_VELECITY = 0.0;
+	float MAX_RAD_VELECITY = 0.25;
+	float MAX_TANGENTIAL_VELECITY = 0.0;
 	float maxInitialRadius_meters = 6;
 	void randomizeStartPosition();
 	void randomizeVelocity();
