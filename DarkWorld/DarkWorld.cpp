@@ -150,7 +150,10 @@ void audioLoop(){
 	sound.updateEnemySound(sound.convertVector(loc->x, 0.0, loc->y));
 	// Update your position ( Position, Velocity, Unit vector heading)
 	loc = player->getLoc();
-	sound.updateListener(sound.convertVector(loc->x, 0.0, loc->y), sound.convertVector(0.0, 0.0, 1.0));
+	Point* front = player->front;
+	float sum = front->x + front->y;
+
+	sound.updateListener(sound.convertVector(loc->x, 0.0, loc->y), sound.convertVector((front->x)/sum, 0.0, (front->y)/sum));
 
 	// Update sound engine. Do this before updating graphics.
 	sound.callUpdate();
@@ -244,16 +247,7 @@ void renderingThread(sf::RenderWindow* window)
 		window->display();
 	}
 }
-//returns the unit vector of the enemy.
-Point unitVectorOfEnemy()
-{
-	Point* location = e1->getLoc();
-	float vectorMagnitude = sqrt((location->x)*(location->x) + (location->y)*(location->y));
-	float newX = (location->x) / vectorMagnitude;
-	float newY = (location->y) / vectorMagnitude;
-	Point unitVector = Point(newX, newY);
-	return unitVector;
-}
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
