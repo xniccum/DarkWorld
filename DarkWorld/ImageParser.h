@@ -7,18 +7,19 @@ using namespace cv;
 class ImageParser {
 public:
 	explicit ImageParser();
-	std::vector<Point> getCoordinates(Mat img);
+	int * getCoordinates(Mat img, bool debug = 0);
 
-private:
-	Scalar lowerShirtColor;
-	Scalar upperShirtColor;
-	Scalar lowerWhite;
-	Scalar upperWhite;
-	Scalar lowerBlack;
-	Scalar upperBlack;
+private:	
+	std::vector<int> L_rs;
+	std::vector<int> U_rs;
+	std::vector<int> L_wh;
+	std::vector<int> U_wh;
+	std::vector<int> L_gh;
+	std::vector<int> U_gh;
 	Vec3b greyDefinition;
 
 	Mat leaveOnlyLargestRegion(Mat img, int numRegions);
-	Mat getMask(Mat HSVimg, Scalar lower_color, Scalar upper_color);
+	Mat getMask(Mat HSVimg, std::vector<int> lower_color, std::vector<int> upper_color);
 	Mat grayOut(Mat img);
+	Point getArmPoint(Point headPos, Mat hoodieMask);
 };

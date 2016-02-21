@@ -1,15 +1,55 @@
 #pragma once
 #include "stdafx.h"
 #include "ImageParser.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
 
 ImageParser::ImageParser() {
-	lowerShirtColor = Scalar(0, 0, 0);
-	upperShirtColor = Scalar(60, 255, 255);
-	lowerWhite = Scalar(200, 200, 200);
-	upperWhite = Scalar(255, 255, 255);
-	lowerBlack = Scalar(0, 0, 0);
-	upperBlack = Scalar(20, 20, 20);
+	string line;
+	ifstream myfile("../images/color_params.txt");
+	getline(myfile, line);
+	myfile.close();
+
+	std::vector<int> vect;
+	std::stringstream ss(line);
+	int i;
+	while (ss >> i) {
+		vect.push_back(i);
+		if (ss.peek() == ',') {
+			ss.ignore();
+		}
+	}
+
+	L_rs.push_back(vect.at(1));
+	L_rs.push_back(vect.at(3));
+	L_rs.push_back(vect.at(5));
+
+	U_rs.push_back(vect.at(0));
+	U_rs.push_back(vect.at(2));
+	U_rs.push_back(vect.at(4));
+
+	L_gh.push_back(vect.at(7));
+	L_gh.push_back(vect.at(9));
+	L_gh.push_back(vect.at(11));
+
+	U_gh.push_back(vect.at(6));
+	U_gh.push_back(vect.at(8));
+	U_gh.push_back(vect.at(10));
+
+	L_wh.push_back(vect.at(13));
+	L_wh.push_back(vect.at(15));
+	L_wh.push_back(vect.at(17));
+
+	U_wh.push_back(vect.at(12));
+	U_wh.push_back(vect.at(14));
+	U_wh.push_back(vect.at(16));
+
 	greyDefinition = Vec3b(100, 100, 100);
+
+	//printf("(%d,%d,%d)  (%d,%d,%d)\n", L_rs.at(0), L_rs.at(1), L_rs.at(2), U_rs.at(0), U_rs.at(1), U_rs.at(2));
 }
 
 /*
@@ -42,11 +82,11 @@ Mat ImageParser::leaveOnlyLargestRegion(Mat img, int numRegions) {
 This method is meant to create a color mask on the biggest continuous regions
 that satisfies the input color range
 */
-Mat ImageParser::getMask(Mat HSVimg, Scalar lower_color, Scalar upper_color) {
+Mat ImageParser::getMask(Mat HSVimg, std::vector<int> lower_color, std::vector<int> upper_color) {
 	Mat mask;
-
 	inRange(HSVimg, lower_color, upper_color, mask);
 	mask = 255 - mask;
+
 	morphologyEx(mask, mask, MORPH_CLOSE, Mat());
 	morphologyEx(mask, mask, MORPH_CLOSE, Mat());
 	dilate(mask, mask, Mat());
@@ -73,37 +113,71 @@ Mat ImageParser::grayOut(Mat img) {
 	return img;
 }
 
+Point ImageParser::getArmPoint(Point headPos, Mat hoodieMask) {
+	imshow("check",hoodieMask);
+	waitKey(0);
+
+
+	int maxx = 0;
+	Point maxxPoint = Point(0, 0);
+	for (int y = 0; y < hoodieMask.rows; y++) {
+		for (int x = 0; x < hoodieMask.cols; x++) {
+			Vec3b color = hoodieMask.at<Vec3b>(Point(x, y));
+			if (color[0] != 255 || color[1] != 255 || color[2] != 255) {
+				continue;
+			}
+			int dist = (headPos.x - x)*(headPos.x - x) + (headPos.y - y)*(headPos.y - y);
+			if (dist > maxx) {
+				maxx = dist;
+				maxxPoint = Point(x,y);
+			}
+		}
+	}
+	return maxxPoint;
+}
+
 /*
 This method takes in an top-down image of someone wearing a hat with a white and black sticker on it.  The
 photo should also have the person extending there arm.
 */
-std::vector<Point> ImageParser::getCoordinates(Mat img) {
-	Mat bodyMask, whiteDotMask, blackDotMask;
-	cvtColor(img, img, CV_BGR2HSV);
+int * ImageParser::getCoordinates(Mat img, bool debug) {
+	Mat bodyMask, whiteDotMask, greenDotMask;
 
-	bodyMask = getMask(img, lowerShirtColor, upperShirtColor);
+	cvtColor(img, img, CV_BGR2HSV);
+	bodyMask = getMask(img, L_rs, U_rs);
 	bitwise_and(img, Mat::zeros(Size(img.cols, img.rows), CV_8UC3), img, 255 - bodyMask);
-	cvtColor(img, img, CV_HSV2BGR);
 
 	img = grayOut(img);
-	whiteDotMask = 255 - getMask(img, lowerWhite, upperWhite);
-	blackDotMask = 255 - getMask(img, lowerBlack, upperBlack);
-	whiteDotMask = 255 - getMask(whiteDotMask, lowerWhite, upperWhite); //do this twice because ???
-	blackDotMask = 255 - getMask(blackDotMask, lowerBlack, upperBlack); //do this twice because ???
+	whiteDotMask = 255 - getMask(img, L_wh, U_wh);
+	greenDotMask = 255 - getMask(img, L_gh, U_gh);
 
 	Moments whiteMoments = moments(whiteDotMask, false);
-	Moments blackMoments = moments(blackDotMask, false);
+	Moments greenMoments = moments(greenDotMask, false);
 	Point whiteCentroid(whiteMoments.m10 / whiteMoments.m00, whiteMoments.m01 / whiteMoments.m00);
-	Point blackCentroid(blackMoments.m10 / blackMoments.m00, blackMoments.m01 / blackMoments.m00);
+	Point greenCentroid(greenMoments.m10 / greenMoments.m00, greenMoments.m01 / greenMoments.m00);
+	Point armCentroid = getArmPoint(Point((whiteCentroid.x + greenCentroid.x) / 2, (whiteCentroid.y + greenCentroid.y) / 2), 255-bodyMask);
 
-	//printf("(%d,%d)\n", whiteCentroid.x, whiteCentroid.y);
-	//printf("(%d,%d)\n", blackCentroid.x, blackCentroid.y);
-	//imshow("body mask", bodyMask);
-	//imshow("black dot mask", blackDotMask);
-	//imshow("white dot mask", whiteDotMask);
-	//imshow("trimmed image img", img);
-	//waitKey(0);
-	std::vector<Point> toReturn = { whiteCentroid, blackCentroid };
-
+	if (debug) {
+		printf("(%d,%d)\n", whiteCentroid.x, whiteCentroid.y);
+		printf("(%d,%d)\n", greenCentroid.x, greenCentroid.y);
+		printf("(%d,%d)\n", armCentroid.x, armCentroid.y);
+		imshow("red shirt mask", bodyMask);
+		imshow("green cap mask", greenDotMask);
+		imshow("white cap mask", whiteDotMask);
+		waitKey(0);
+	}
+	
+	int toReturn[6] = { greenCentroid.x, greenCentroid.y, whiteCentroid.x, whiteCentroid.y, armCentroid.x, armCentroid.y };
 	return toReturn;
 }
+
+
+
+int targetX, targetY;
+int curX, curY;
+
+targetX -= curX;
+targetY -= curY;
+
+targetTheta = atan(targetX / targetY);
+ourTheta = atan(((greenY + whiteY) / 2) / ((greenX + whiteX) / 2));
