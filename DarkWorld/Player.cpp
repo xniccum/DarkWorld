@@ -8,7 +8,7 @@ Player::Player(std::string filename) : Actor(filename)
 	this->front = new Point(0,1);
 	this->back = new Point(0, -1);
 	this->aim = new Point(0, 0);
-	
+	this->aimActor = new Actor(filename);
 }
 
 
@@ -29,6 +29,9 @@ void Player::computerDirections(float* points) {
 	//Aim and Normalize
 	int hyp = sqrt(pow(aim->x - centerX, 2) + pow(aim->y - centerY, 2));
 	this->aim = new Point((aim->x - centerX) / hyp, (aim->y - centerY) / hyp);
+
+	this->getSprite().setRotation(atan2(front->y, front->x));
+	this->aimActor->getSprite().setRotation(atan2(aim->y, aim->x));
 }
 
 bool Player::isHit(Actor* actor, int range,int tolarance) {

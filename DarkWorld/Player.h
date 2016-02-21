@@ -13,5 +13,6 @@ public:
 	Point* aim;
 
 private:
+	Actor* aimActor;
 };
 

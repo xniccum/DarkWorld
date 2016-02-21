@@ -125,15 +125,15 @@ void myoLoop(myo::Hub &hub, MyoConnection &collector, int DISPLAY_UPDATE_MS){
 
 void renderingThread(sf::RenderWindow* window)
 {
-	sf::Clock* clock = new sf::Clock();
-	clock->restart();
-	float start = clock->getElapsedTime().asMilliseconds();
-	printf("%f",start);
+	//sf::Clock* clock = new sf::Clock();
+	//clock->restart();
+	//float start = clock->getElapsedTime().asMilliseconds();
+	//printf("%f",start);
 	// the rendering loop
 	while (window->isOpen())
 	{
-		float milisec = clock->getElapsedTime().asMilliseconds() - start;
-		printf("%f", milisec);
+		//float milisec = clock->getElapsedTime().asMilliseconds() - start;
+		//printf("%f", milisec);
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
 		while (window->pollEvent(event))
@@ -158,7 +158,7 @@ void renderingThread(sf::RenderWindow* window)
 		{
 			player->move(0, 0.1);
 		}
-		e1->updatePosition(milisec);
+		//e1->updatePosition(milisec);
 
 		// clear the window with black color
 		window->clear(sf::Color::White);
@@ -256,10 +256,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	sf::Thread renderThread(&renderingThread, window);
 	renderThread.launch();
 
-	while (window->isOpen())
-	{
-		
-	}
 	return 0;
 
 }
