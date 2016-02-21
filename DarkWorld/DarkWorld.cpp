@@ -127,6 +127,8 @@ int connectMyo()
 	}
 }
 
+
+
 void renderingThread(sf::RenderWindow* window)
 {
 	// the rendering loop
@@ -187,6 +189,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	AllocConsole();
 	SetConsoleTitleA("DarkWorld v 0.2");
 
+	//Start Audio
+	CommonSound sound;
+
+	sound.playMenuSound(0);
 
 	//freopen("conin$", "r", stdin);
 	//freopen("conout$", "w", stdout);
