@@ -85,11 +85,11 @@ void CommonSound::playEnemySound()
 {
 	fms_system->playSound(s_step_c, 0, false, &enemy_sounds);
 }
-void CommonSound::updateEnemySound(FMOD_VECTOR &pos, FMOD_VECTOR &vel)
+void CommonSound::updateEnemySound(FMOD_VECTOR &pos)
 {
-	enemy_sounds->set3DAttributes(&pos, &vel);
+	enemy_sounds->set3DAttributes(&pos, 0);
 }
-void CommonSound::updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &vel, FMOD_VECTOR &forward)
+void CommonSound::updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &forward)
 {
 	/*
             static FMOD_VECTOR lastpos = { 0.0f, 0.0f, 0.0f };
@@ -99,7 +99,7 @@ void CommonSound::updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &vel, FMO
 	*/
 	FMOD_VECTOR up             = { 0.0f, 1.0f, 0.0f };
 	
-	fms_system->set3DListenerAttributes(0, &listenerpos, &vel, &forward, &up);
+	fms_system->set3DListenerAttributes(0, &listenerpos, 0, &forward, &up);
 
 }
 /*

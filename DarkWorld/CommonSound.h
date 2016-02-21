@@ -32,9 +32,9 @@ public:
 	void playMenuSound(int sound);
 	// Position: enemy position {+X = right, +Y = up, +Z = forwards}
 	// Velocity: enemy velocity
-	void updateEnemySound(FMOD_VECTOR &pos, FMOD_VECTOR &vel);
+	void updateEnemySound(FMOD_VECTOR &pos);
 	void playEnemySound();
-	void updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &vel, FMOD_VECTOR &forward);
+	void updateListener(FMOD_VECTOR &listenerpos, FMOD_VECTOR &forward);
 	FMOD_VECTOR convertVector(float x, float y, float z);
 	void callUpdate();
 

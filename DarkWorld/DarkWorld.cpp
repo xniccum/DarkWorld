@@ -25,6 +25,18 @@ ListenArea * area;
 Player * player;
 Enemy * e1;
 
+
+
+//Myo 
+// Hub with our application identifier. The Hub provides access to one or more Myos.
+myo::Hub hub("com.darkworld.darkworld");
+// Construct an instance of our DeviceListener, so that we can register it with the Hub.
+MyoConnection collector;
+
+//Sound
+// Construct our sound.
+CommonSound sound;
+
 void getWebcamSnip() {
 	VideoCapture cap(0); // open the default camera 
 	if (!cap.isOpened())  // check if we succeeded
@@ -57,7 +69,7 @@ void mapToCommands(MyoConnection conn)
 	}
 }
 //Connects to Myo server and gets gestures
-int connectMyo(myo::Hub &hub, MyoConnection &collector)
+int connectMyo()
 {
 	// We catch any exceptions that might occur below -- see the catch statement for more details.
 	try {
@@ -97,9 +109,10 @@ int connectMyo(myo::Hub &hub, MyoConnection &collector)
 		std::cin.ignore();
 		return 1;
 	}
+	return 0;
 }
 
-void myoLoop(myo::Hub &hub, MyoConnection &collector, int DISPLAY_UPDATE_MS){
+void myoLoop(int DISPLAY_UPDATE_MS){
 	// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
 	// In this case, we wish to update our display 20 times a second, so we run for 1000/20 milliseconds.
 	hub.run(1000 / DISPLAY_UPDATE_MS);
@@ -123,17 +136,40 @@ void myoLoop(myo::Hub &hub, MyoConnection &collector, int DISPLAY_UPDATE_MS){
 	}
 }
 
+void audioLoop(){
+	// Update game sounds (move bad guy)
+	sound.updateEnemySound(sound.convertVector(0.0, 0.0, 2.0));
+	// Update your position ( Position, Velocity, Unit vector heading)
+	sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
+
+	// Update sound engine. Do this before updating graphics.
+	sound.callUpdate();
+}
+
+
+void gameUpdate(){
+	//Myo 
+	int update_interval = 20; // <- how many MS per update
+	myoLoop(update_interval);
+	audioLoop();
+}
+
 void renderingThread(sf::RenderWindow* window)
 {
 	sf::Clock* clock = new sf::Clock();
 	clock->restart();
 	float start = clock->getElapsedTime().asMilliseconds();
-	printf("%f",start);
+	//printf("%f",start);
 	// the rendering loop
 	while (window->isOpen())
 	{
 		float milisec = clock->getElapsedTime().asMilliseconds() - start;
-		printf("%f", milisec);
+		//printf("%f", milisec);
+
+		if ((int)milisec % 50 == 0){
+			gameUpdate();
+		}
+
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
 		while (window->pollEvent(event))
@@ -176,69 +212,37 @@ int _tmain(int argc, _TCHAR* argv[])
 	AllocConsole();
 	SetConsoleTitleA("DarkWorld v 0.2");
 
-	/*
-	// Start Myo
-		// First, we create a Hub with our application identifier. The Hub provides access to one or more Myos.
-	myo::Hub hub("com.darkworld.darkworld");
-		// Next we construct an instance of our DeviceListener, so that we can register it with the Hub.
-	MyoConnection collector;
-		// Then we configure them both with this fancy helper function.
-	connectMyo(hub, collector);
-
-// Put this in the main game loop:
-	int DISPLAY_UPDATE_MS = 20; // <- how many times per second do we update? Relevant to Myo server
-	myoLoop(hub, collector, DISPLAY_UPDATE_MS);
-
-	*/
-
-	//Start Audio
-	CommonSound sound;
-
+//Myo
+	// Connect hub to collector (these be globals here)
+	connectMyo();
+//Audio	
+	//Inform that the game is paused
 	sound.playMenuSound(0);
+	//initialize enemy sound source as 2m in front of player
+	sound.updateEnemySound(sound.convertVector(0.0, 0.0, 2.0));
+	// initialize player at 0,0, looking straight "north?"
+	sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
 
-	//3D sound and the FMOD channel management system need to be updated once per frame. See below for a shitty loop
-
-	// DO the following in the game loop for updating sound:
-	//_> update game sounds (move bad guy's sound loc)
-	//Don't forget that (+x = +right, +y = +up, +z = + ahead)
-	sound.updateEnemySound(sound.convertVector(0.0, 0.0, 2.0), sound.convertVector(0.0, 0.0, 0.0));
-
-	// Maybe play enemy sound. We should do this randomly
-	sound.playEnemySound();
-
-	sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
+// play enemy sound. We should do this randomly
+	//The enemy sound sample is 10 seconds long!
+//sound.playEnemySound();
 
 
-	int iters = 0;
-	std::cout << "Starting shitty example loop" << std::endl;
-// This stuff goes in the main game loop. Replicated in loop form here so you can hear Zach walking away. 
-	while (iters < 10){ 
-		// Update game sounds (move bad guy)
-		sound.updateEnemySound(sound.convertVector(0.0, 0.0, 2.0+iters), sound.convertVector(0.0, 0.0, 0.25));
-		// Update your position ( Position, Velocity, Unit vector heading)
-		sound.updateListener(sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 0.0), sound.convertVector(0.0, 0.0, 1.0));
 
-		// Update sound engine. Do this before updating graphics.
-		sound.callUpdate();
 
-		//don't put below in the main game loop :P
-		Sleep(500);
-		std::cout << "Iter " << iters << " complete" <<std::endl;
-		iters++;
-	}
 
+
+	/*
 	//freopen("conin$", "r", stdin);
 	//freopen("conout$", "w", stdout);
 	//freopen("conout$", "w", stderr);
 
-	/*
+
 	ImageParser IP;
 	std::vector<Point> ans = IP.getCoordinates(imread("../images/sleeve_1.jpg"));
 	printf("White Centroid (after): (%d,%d)\n", ans.at(0).x, ans.at(0).y);
 	printf("Black Centroid (after): (%d,%d)\n", ans.at(1).x, ans.at(1).y);
-
-	connectMyo();
-	while (true) {};*/
+*/
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(SIZE, SIZE), "OpenGL");
 
 	// deactivate its OpenGL context
