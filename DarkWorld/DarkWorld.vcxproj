@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="DarkWorld.cpp" />
+    <ClCompile Include="EnemyMovement.cpp" />
     <ClCompile Include="ImageParser.cpp" />
     <ClCompile Include="ListenArea.cpp" />
     <ClCompile Include="MyoConnection.cpp" />
