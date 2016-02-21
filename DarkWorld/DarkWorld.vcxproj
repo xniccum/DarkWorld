@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="ImageParser.h" />
     <ClInclude Include="ListenArea.h" />
     <ClInclude Include="MyoConnection.h" />
@@ -102,7 +103,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="DarkWorld.cpp" />
-    <ClCompile Include="EnemyMovement.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="ImageParser.cpp" />
     <ClCompile Include="ListenArea.cpp" />
     <ClCompile Include="MyoConnection.cpp" />

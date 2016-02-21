@@ -20,6 +20,7 @@
 #include <tchar.h>
 #include "ListenArea.h"
 #include "MyoConnection.h"
+#include <cstdlib>
 #include <cstdio>
 #include <ctime>
 #include <SFML\Graphics.hpp>

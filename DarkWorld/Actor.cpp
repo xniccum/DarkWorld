@@ -20,12 +20,18 @@ Actor::~Actor()
 
 void Actor::setCenter(float x, float y) {
 
-	//int rotation = this->sprite->getRotation();
 	int height = this->texture->getSize().x;
 	int width = this->texture->getSize().y;
 	this->sprite->setOrigin(width/2,height/2);
 	this->sprite->setPosition(x,y);
-	//this->sprite->setRotation(rotation);
+}
+
+void Actor::move(float x, float y) {
+	int spriteX = this->sprite->getPosition().x;
+	int spriteY = this->sprite->getPosition().y;
+	this->setCenter(spriteX + x, spriteY + y);
+	this->loc->x += x;
+	this->loc->y += y;
 }
 
 void Actor::rotate(float degree) {

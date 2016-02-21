@@ -160,11 +160,19 @@ void eventThread(sf::RenderWindow* window) {
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			actor->rotate(-0.001);
+			actor->move(-0.1, 0);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			actor->rotate(0.001);
+			actor->move(0.1, 0);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			actor->move(0, -0.1);
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			actor->move(0, 0.1);
 		}
 	}
 }
